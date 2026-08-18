@@ -10,13 +10,13 @@
   "monorepo": true,
   "root": "apps/nestar-api",
   "projects": {
-    "nestar": {
+    "nestar-api": {
       "type": "application",
       "root": "apps/nestar-api",
       "entryFile": "main",
       "sourceRoot": "apps/nestar-api/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/nestar/tsconfig.app.json"
+        "tsConfigPath": "apps/nestar-api/tsconfig.app.json"
       }
     },
     "nestar-batch": {
