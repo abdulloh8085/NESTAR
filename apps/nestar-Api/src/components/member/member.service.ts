@@ -9,55 +9,58 @@ import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class MemberService {
-    constructor(@InjectModel("Member") private readonly memberModel: Model<Member>,
-        private readonly authService: AuthService) { }
+	constructor(
+		@InjectModel('Member') private readonly memberModel: Model<Member>,
+		private readonly authService: AuthService,
+	) {}
 
-    public async signup(input: MemberInput): Promise<Member> {
-        input.memberPassword = await this.authService.hashPassword(input.memberPassword);
-        try {
-            const result = await this.memberModel.create(input);
-            result.accessToken = await this.authService.createToken(result);
-            return result
-        } catch (err) {
-            console.log("Error, Service.model:", err.message);
-            throw new BadRequestException(Message.USED_MEMBER_NICK_OR_PHONE)
-        }
-    }
+	public async signup(input: MemberInput): Promise<Member> {
+		input.memberPassword = await this.authService.hashPassword(input.memberPassword);
+		try {
+			const result = await this.memberModel.create(input);
+			result.accessToken = await this.authService.createToken(result);
+			return result;
+		} catch (err) {
+			console.log('Error, Service.model:', err.message);
+			throw new BadRequestException(Message.USED_MEMBER_NICK_OR_PHONE);
+		}
+	}
 
-    public async login(input: LoginInput): Promise<Member> {
-        const { memberNick, memberPassword } = input;
-        const response: Member = await this.memberModel
-            .findOne({ memberNick: memberNick })
-            .select('+memberPassword')
-            .exec();
+	public async login(input: LoginInput): Promise<Member> {
+		const { memberNick } = input;
+		const response = await this.memberModel.findOne({ memberNick: memberNick }).select('+memberPassword').exec();
 
-        if (!response || response.memberStatus === MemberStatus.DELETE) {
-            throw new InternalServerErrorException(Message.NO_MEMBER_NICK);
-        } else if (response.memberStatus === MemberStatus.BLOCK) {
-            throw new InternalServerErrorException(Message.BLOCKED_USER);
-        }
+		if (!response || response.memberStatus === MemberStatus.DELETE) {
+			throw new InternalServerErrorException(Message.NO_MEMBER_NICK);
+		} else if (response.memberStatus === MemberStatus.BLOCK) {
+			throw new InternalServerErrorException(Message.BLOCKED_USER);
+		}
 
-        const isMatch = await this.authService.comparePassword(input.memberPassword, response.memberPassword);
-        if (!isMatch) throw new InternalServerErrorException(Message.WRONG_PASSWORD);
+		if (!response.memberPassword) {
+			throw new InternalServerErrorException(Message.SOMETHING_WENT_WRONG);
+		}
 
-        response.accessToken = await this.authService.createToken(response)
+		const isMatch = await this.authService.comparePassword(input.memberPassword, response.memberPassword);
+		if (!isMatch) throw new InternalServerErrorException(Message.WRONG_PASSWORD);
 
-        return response;
-    }
+		response.accessToken = await this.authService.createToken(response);
 
-    public async updateMember(): Promise<string> {
-        return 'updateMember executed!';
-    }
+		return response;
+	}
 
-    public async getMember(): Promise<string> {
-        return 'getMember executed!';
-    }
+	public async updateMember(): Promise<string> {
+		return 'updateMember executed!';
+	}
 
-    public async getAllMembersByAdmin(): Promise<string> {
-        return 'getAllMembersByAdmin executed!';
-    }
+	public async getMember(): Promise<string> {
+		return 'getMember executed!';
+	}
 
-    public async updateMemberByAdmin(): Promise<string> {
-        return 'updateMemberByAdmin executed!';
-    }
+	public async getAllMembersByAdmin(): Promise<string> {
+		return 'getAllMembersByAdmin executed!';
+	}
+
+	public async updateMemberByAdmin(): Promise<string> {
+		return 'updateMemberByAdmin executed!';
+	}
 }
