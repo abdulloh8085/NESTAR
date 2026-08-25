@@ -1,4 +1,4 @@
-mport { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Member, Members } from '../../libs/dto/member/member';
@@ -25,7 +25,7 @@ export class MemberService {
             result.accessToken = await this.authService.createToken(result);
             return result
         } catch (err) {
-            console.log("Error, Service.model:", err.message);
+            // console.log("Error, Service.model:", err.message);
             throw new BadRequestException(Message.USED_MEMBER_NICK_OR_PHONE)
         }
     }
@@ -181,7 +181,10 @@ export class MemberService {
         return result[0];
     }
 
-    public async updateMemberByAdmin(): Promise<string> {
-        return 'updateMemberByAdmin executed!';
+    public async updateMemberByAdmin(input: MemberUpdate): Promise<Member> {
+        const result: Member = await this.memberModel.findOneAndUpdate({ _id: input._id }, input, { new: true }).exec();
+        if (!result) throw new InternalServerErrorException(Message.UPDATE_FAILED);
+
+        return result;
     }
 }
