@@ -60,3 +60,5 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 /postman/Nestar_local.postman_environment.json
 /postman/README.md
 
+/*practices*/
+practice.py
