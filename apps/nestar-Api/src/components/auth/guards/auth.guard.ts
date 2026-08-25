@@ -9,7 +9,7 @@ export class AuthGuard implements CanActivate {
 	async canActivate(context: ExecutionContext | any): Promise<boolean> {
 		console.info('--- @guard() Authentication [AuthGuard] ---');
 
-		if (context.contextType === 'graphql') {
+		if (context.getType() === 'graphql') {
 			const request = context.getArgByIndex(2).req;
 
 			const bearerToken = request.headers.authorization;
@@ -25,6 +25,6 @@ export class AuthGuard implements CanActivate {
 			return true;
 		}
 
-		// description => http, rpc, gprs and etc are ignored
+		return true;
 	}
 }

@@ -8,7 +8,7 @@ export class WithoutGuard implements CanActivate {
 	async canActivate(context: ExecutionContext | any): Promise<boolean> {
 		console.info('--- @guard() Authentication [WithoutGuard] ---');
 
-		if (context.contextType === 'graphql') {
+		if (context.getType() === 'graphql') {
 			const request = context.getArgByIndex(2).req,
 				bearerToken = request.headers.authorization;
 
@@ -26,6 +26,6 @@ export class WithoutGuard implements CanActivate {
 			return true;
 		}
 
-		// description => http, rpc, gprs and etc are ignored
+		return true;
 	}
 }

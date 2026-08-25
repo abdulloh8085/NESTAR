@@ -16,7 +16,7 @@ export class RolesGuard implements CanActivate {
 
 		console.info(`--- @guard() Authentication [RolesGuard]: ${roles} ---`);
 
-		if (context.contextType === 'graphql') {
+		if (context.getType() === 'graphql') {
 			const request = context.getArgByIndex(2).req;
 			const bearerToken = request.headers.authorization;
 			if (!bearerToken) throw new BadRequestException(Message.TOKEN_NOT_EXIST);
@@ -33,6 +33,6 @@ export class RolesGuard implements CanActivate {
 			return true;
 		}
 
-		// description => http, rpc, gprs and etc are ignored
+		return true;
 	}
 }
