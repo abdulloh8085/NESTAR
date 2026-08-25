@@ -4,21 +4,30 @@ import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 
 describe('AppController (e2e)', () => {
-  let app: INestApplication;
+	let app: INestApplication;
 
-  beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
+	beforeEach(async () => {
+		const moduleFixture: TestingModule = await Test.createTestingModule({
+			imports: [AppModule],
+		}).compile();
 
-    app = moduleFixture.createNestApplication();
-    await app.init();
-  });
+		app = moduleFixture.createNestApplication();
+		await app.init();
+	});
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
-  });
+	afterEach(async () => {
+		await app.close();
+	});
+
+	it('/ (GET)', () => {
+		return request(app.getHttpServer()).get('/').expect(200).expect('Welcome to Nestar API server!');
+	});
+
+	it('/graphql (POST)', () => {
+		return request(app.getHttpServer())
+			.post('/graphql')
+			.send({ query: '{ __typename }' })
+			.expect(200)
+			.expect({ data: { __typename: 'Query' } });
+	});
 });
