@@ -10,6 +10,7 @@ import { MemberType } from '../../libs/enums/member.enum';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { MemberUpdate } from '../../libs/dto/member/member.update';
+import { shapeIntoMongoObjectId } from '../../libs/config';
 
 @Resolver()
 export class MemberResolver {
@@ -42,7 +43,7 @@ export class MemberResolver {
     @Query(() => String)
     public async checkAuth(@AuthMember('memberNick') memberNick: string): Promise<string> {
         console.log('Query: checkAuth');
-        console.log(" ----------------------> ", memberNick)
+        console.log(" =>", memberNick)
         return `Hi ${memberNick}`
     }
 
@@ -51,16 +52,17 @@ export class MemberResolver {
     @Query(() => String)
     public async checkAuthRoles(@AuthMember() authmember: Member): Promise<string> {
         console.log('Query: checkAuthRoles');
-        console.log(" ----------------------> ", authmember.memberType)
+        console.log(" =>", authmember.memberType)
         return `Hi ${authmember.memberNick} you are ${authmember.memberType} (memberId: ${authmember._id})`
     }
 
 
 
-    @Query(() => String)
-    public async getMember(): Promise<string> {
+    @Query(() => Member)
+    public async getMember(@Args('memberId') input: string): Promise<Member> {
         console.log('Query: getMember');
-        return this.memberService.getMember();
+        const targetId = shapeIntoMongoObjectId(input)
+        return this.memberService.getMember(targetId);
     }
 
 
