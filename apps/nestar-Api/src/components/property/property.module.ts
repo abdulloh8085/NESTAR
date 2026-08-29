@@ -2,19 +2,24 @@ import { Module } from '@nestjs/common';
 import { PropertyResolver } from './property.resolver';
 import { PropertyService } from './property.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import PropertySchema from '../../scemas/Property.model';
+
 import { AuthModule } from '../auth/auth.module';
 import { ViewModule } from '../view/view.module';
+import { MemberModule } from '../member/member.module';
+import PropertySchema from '../../../src/scemas/Property.model';
 
 @Module({
-  imports: [MongooseModule.forFeature([
-    {
-      name: "Property",
-      schema: PropertySchema
-    }]),
+  imports: [
+    MongooseModule.forFeature([
+      {
+        name: 'Property',
+        schema: PropertySchema,
+      },
+    ]),
     AuthModule,
-    ViewModule
+    ViewModule,
+    MemberModule,
   ],
-  providers: [PropertyResolver, PropertyService]
+  providers: [PropertyResolver, PropertyService],
 })
 export class PropertyModule { }

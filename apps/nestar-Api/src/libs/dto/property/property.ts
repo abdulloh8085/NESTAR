@@ -1,79 +1,66 @@
-import { Field, Int, ObjectType } from "@nestjs/graphql";
-import type { ObjectId } from 'mongoose'
-import { PropertyLocation, PropertyStatus, PropertyType } from "../../enums/property.enum";
+import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { ObjectId } from 'mongoose';
+import { PropertyLocation, PropertyStatus, PropertyType } from '../../enums/property.enum';
+import { Member } from '../member/member';
 
 @ObjectType()
 export class Property {
-
     @Field(() => String)
-    _id!: ObjectId;
+    _id: ObjectId;
 
     @Field(() => PropertyType)
-    propertyType!: PropertyType
+    propertyType: PropertyType;
 
     @Field(() => PropertyStatus)
-    propertyStatus!: PropertyStatus
+    propertyStatus: PropertyStatus;
 
     @Field(() => PropertyLocation)
-    propertyLocation!: PropertyLocation
+    propertyLocation: PropertyLocation;
 
     @Field(() => String)
-    propertyAddress!: string
-
+    propertyAddress: string;
 
     @Field(() => String)
-    propertyTitle!: string
-
-
-    @Field(() => Number)
-    propertyPrice!: number
-
+    propertyTitle: string;
 
     @Field(() => Number)
-    propertySquare!: number
+    propertyPrice: number;
+
+    @Field(() => Number)
+    propertySquare: number;
 
     @Field(() => Int)
-    propertyBeds!: number
-
-
-    @Field(() => Int)
-    propertyRooms!: number
-
+    propertyBeds: number;
 
     @Field(() => Int)
-    propertyViews!: number
-
-
-    @Field(() => Int)
-    propertyLikes!: number
-
+    propertyRooms: number;
 
     @Field(() => Int)
-    propertyComments!: number
-
+    propertyViews: number;
 
     @Field(() => Int)
-    propertyRank!: number
+    propertyLikes: number;
 
+    @Field(() => Int)
+    propertyComments: number;
+
+    @Field(() => Int)
+    propertyRank: number;
 
     @Field(() => [String])
-    propertyImages!: string[]
-
-
+    propertyImages: string[];
 
     @Field(() => String, { nullable: true })
-    propertyDesc?: string
+    propertyDesc?: string;
 
     @Field(() => Boolean)
-    propertyBarter!: boolean
+    propertyBarter: boolean;
 
     @Field(() => Boolean)
-    propertyRent!: boolean
-
+    propertyRent: boolean;
 
     @Field(() => String)
-    memberId!: ObjectId
-
+    memberId: ObjectId;
 
     @Field(() => Date, { nullable: true })
     soldAt?: Date;
@@ -84,10 +71,14 @@ export class Property {
     @Field(() => Date, { nullable: true })
     constructedAt?: Date;
 
-    @Field(() => Date,)
-    createdAt!: Date;
+    @Field(() => Date)
+    createdAt: Date;
 
-    @Field(() => Date,)
-    updatedAt!: Date;
+    @Field(() => Date)
+    updatedAt: Date;
+
+    /* from aggregation  */
+    @Field(() => Member, { nullable: true })
+    memberData?: Member;
 
 }
