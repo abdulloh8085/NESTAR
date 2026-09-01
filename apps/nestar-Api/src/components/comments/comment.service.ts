@@ -31,7 +31,7 @@ export class CommentService {
         try {
             result = await this.commentModel.create(input);
         } catch (err) {
-            console.log('Error, Service.model:', err.message);
+            // console.log('Error, Service.model:', err.message);
             throw new BadRequestException(Message.CREATE_FAILED);
         }
 
@@ -121,4 +121,10 @@ export class CommentService {
     }
 
     /** ADMIN **/
+
+    public async removeCommentByAdmin(input: ObjectId): Promise<Comment> {
+        const result = await this.commentModel.findByIdAndDelete(input);
+        if (!result) throw new InternalServerErrorException(Message.REMOVE_FAILED);
+        return result;
+    }
 }
