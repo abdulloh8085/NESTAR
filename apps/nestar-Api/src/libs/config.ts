@@ -1,6 +1,9 @@
 import { ObjectId } from "bson";
+
+
 export const availableAgentSorts = ['createdAt', 'updatedAt', 'memberLikes', 'memberVievs', 'memberRank']
 export const availableMemberSorts = ['createdAt', 'updatedAt', 'memberLikes', 'memberVievs']
+
 
 export const availableOptions = ['propertyBarter', 'propertyRent'];
 
@@ -13,15 +16,18 @@ export const availablePropertySorts = [
     'propertyPrice',
 ];
 
+export const availableBoardArticles = ['createdAt', 'updatedAt', 'articleLikes', 'articleViews']
+
 /** IMAGE CONFIGURATION **/
-import * as path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import * as path from 'path';
 
 export const validMimeTypes = ['image/png', 'image/jpg', 'image/jpeg'];
 export const getSerialForImage = (filename: string) => {
     const ext = path.parse(filename).ext;
     return uuidv4() + ext;
 };
+
 
 export const shapeIntoMongoObjectId = (target: any) => {
     return typeof target === "string" ? new ObjectId(target) : target;
