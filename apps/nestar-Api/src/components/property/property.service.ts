@@ -36,7 +36,7 @@ export class PropertyService {
             });
             return result;
         } catch (err) {
-            // console.log('Error, Service.model:', err.message);
+            console.log('Error, Service.model:', err.message);
             throw new BadRequestException(Message.CREATE_FAILED);
         }
     }
@@ -79,7 +79,13 @@ export class PropertyService {
             }
         }
 
-        // meLiked
+        const likeInput = {
+            memberId: memberId,
+            likeRefId: propertyId,
+            likeGroup: LikeGroup.PROPERTY,
+        };
+
+        targetProperty.meLiked = await this.likeService.checkLikeExistence(likeInput);
 
         targetProperty.memberData = await this.memberService.getMember(
             null,
