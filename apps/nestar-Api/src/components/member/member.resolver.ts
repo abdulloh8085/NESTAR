@@ -12,9 +12,9 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { MemberUpdate } from '../../libs/dto/member/member.update';
 import { getSerialForImage, shapeIntoMongoObjectId, validMimeTypes } from '../../libs/config';
 import { WithoutGuard } from '../auth/guards/without.guard';
+import { Message } from '../../libs/enums/common.enum';
 import { GraphQLUpload, FileUpload } from 'graphql-upload';
 import { createWriteStream } from 'fs';
-import { Message } from '../../libs/enums/common.enum';
 
 @Resolver()
 export class MemberResolver {
@@ -80,6 +80,17 @@ export class MemberResolver {
         return await this.memberService.getAgents(memberId, input);
     }
 
+    @UseGuards(AuthGuard)
+    @Mutation(() => Member)
+    public async likeTargetMember(
+        @Args('memberId') input: string,
+        @AuthMember('_id') memberId: ObjectId,
+    ): Promise<Member> {
+        console.log('Mutation: likeTargetMember');
+        const likeRefId = shapeIntoMongoObjectId(input);
+        return await this.memberService.likeTargetMember(memberId, likeRefId);
+    }
+
 
     /* ADMIN */
     @Roles(MemberType.ADMIN)
@@ -98,8 +109,9 @@ export class MemberResolver {
         console.log('Mutation: updateMember');
         return this.memberService.updateMemberByAdmin(input);
     }
-    /*IMage UPLOADER */
 
+
+    /* Uploader */
 
     @UseGuards(AuthGuard)
     @Mutation((returns) => String)
@@ -138,8 +150,8 @@ export class MemberResolver {
     ): Promise<string[]> {
         console.log('Mutation: imagesUploader');
 
-        const uploadedImages: string[] = [];
-        const promisedList = files.map(async (img: Promise<FileUpload>, index: number): Promise<void> => {
+        const uploadedImages = [];
+        const promisedList = files.map(async (img: Promise<FileUpload>, index: number): Promise<Promise<void>> => {
             try {
                 const { filename, mimetype, encoding, createReadStream } = await img;
 
