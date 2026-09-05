@@ -15,6 +15,7 @@ import { LikeService } from '../like/like.service';
 import { LikeInput } from '../../libs/dto/like/like.input';
 import { LikeGroup } from '../../libs/enums/like.enum';
 import { Follower, Following, MeFollowed } from '../../libs/dto/follow/follow';
+import { lookupAuthMemberLiked } from '../../libs/config';
 
 @Injectable()
 export class MemberService {
@@ -33,7 +34,7 @@ export class MemberService {
             result.accessToken = await this.authService.createToken(result);
             return result
         } catch (err) {
-            console.log("Error, Service.model:", err.message);
+            // console.log("Error, Service.model:", err.message);
             throw new BadRequestException(Message.USED_MEMBER_NICK_OR_PHONE)
         }
     }
@@ -141,6 +142,7 @@ export class MemberService {
                         list: [
                             { $skip: (input.page - 1) * input.limit },
                             { $limit: input.limit },
+                            lookupAuthMemberLiked(memberId),
                         ],
                         metaCounter: [{ $count: "total" }],
                     },
