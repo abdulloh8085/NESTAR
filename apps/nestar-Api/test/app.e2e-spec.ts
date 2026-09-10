@@ -1,6 +1,7 @@
+import { afterEach, beforeEach, describe, it } from '@jest/globals';
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
+import request = require('supertest');
 import { AppModule } from './../src/app.module';
 
 describe('AppController (e2e)', () => {
@@ -16,7 +17,7 @@ describe('AppController (e2e)', () => {
 	});
 
 	afterEach(async () => {
-		await app.close();
+		await app?.close();
 	});
 
 	it('/ (GET)', () => {
